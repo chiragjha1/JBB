@@ -61,9 +61,10 @@
         /* Categories section styling */
         .categories {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-evenly;
             flex-wrap: wrap;
             margin: 20px 0;
+            gap: 20px;
         }
 
         .categories:focus {
@@ -79,11 +80,10 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin: 10px;
             cursor: pointer;
             transition: transform 0.3s;
         }
-
+        
         /* Category image styling */
         .category img {
             max-width: 100%;
@@ -113,6 +113,11 @@
             width: calc(50% - 20px);
         }
 
+        .product img, .category img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
         /* Product image styling */
         .product img {
             max-width: 100%;
@@ -239,126 +244,126 @@
         }
     </style>
     
-    <script>
-        // Highlight active navigation links
-        const navLinks = document.querySelectorAll('header nav a');
-        let enableScrollListener = true;
-    
-        function setActiveLink(event) {
-            event.preventDefault();
-            enableScrollListener = false;
-    
-            navLinks.forEach(link => link.classList.remove('active'));
-            this.classList.add('active');
-    
-            const targetSection = document.querySelector(this.getAttribute('href'));
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-    
-            setTimeout(() => enableScrollListener = true, 1000);
-        }
-    
-        navLinks.forEach(link => link.addEventListener('click', setActiveLink));
-    
-        window.addEventListener('scroll', () => {
-            if (!enableScrollListener) return;
-    
-            navLinks.forEach(link => {
-                const section = document.querySelector(link.getAttribute('href'));
-                const rect = section.getBoundingClientRect();
-                if (rect.top >= 0 && rect.top < window.innerHeight) {
-                    navLinks.forEach(nav => nav.classList.remove('active'));
-                    link.classList.add('active');
-                }
-            });
+<script>
+    // Highlight active navigation links
+    const navLinks = document.querySelectorAll('header nav a');
+    let enableScrollListener = true;
+
+    function setActiveLink(event) {
+        event.preventDefault();
+        enableScrollListener = false;
+
+        navLinks.forEach(link => link.classList.remove('active'));
+        this.classList.add('active');
+
+        const targetSection = document.querySelector(this.getAttribute('href'));
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+
+        setTimeout(() => enableScrollListener = true, 1000);
+    }
+
+    navLinks.forEach(link => link.addEventListener('click', setActiveLink));
+
+    window.addEventListener('scroll', () => {
+        if (!enableScrollListener) return;
+
+        navLinks.forEach(link => {
+            const section = document.querySelector(link.getAttribute('href'));
+            const rect = section.getBoundingClientRect();
+            if (rect.top >= 0 && rect.top < window.innerHeight) {
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                link.classList.add('active');
+            }
         });
-    
-        const categoryCards = document.querySelectorAll('.category');
-        categoryCards.forEach(card => {
-            card.addEventListener('click', () => {
-                alert(`You clicked on ${card.querySelector('p').textContent}`);
-            });
-    
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'scale(1.05)';
-                card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'scale(1)';
-                card.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-            });
+    });
+
+    const categoryCards = document.querySelectorAll('.category');
+    categoryCards.forEach(card => {
+        card.addEventListener('click', () => {
+            alert(`You clicked on ${card.querySelector('p').textContent}`);
         });
-    
-        // Slider functionality with seamless loop
-        const slider = document.getElementById('slider');
-        const slides = Array.from(document.querySelectorAll('.slide'));
-        const slideCount = slides.length;
-    
-        // Clone the first and last slides
-        const firstClone = slides[0].cloneNode(true);
-        const lastClone = slides[slides.length - 1].cloneNode(true);
-    
-        // Append and prepend clones to the slider
-        slider.appendChild(firstClone);
-        slider.insertBefore(lastClone, slides[0]);
-    
-        let currentSlide = 1; // Start at the real first slide
+
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'scale(1.05)';
+            card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'scale(1)';
+            card.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+        });
+    });
+
+    // Slider functionality with seamless loop
+    const slider = document.getElementById('slider');
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const slideCount = slides.length;
+
+    // Clone the first and last slides
+    const firstClone = slides[0].cloneNode(true);
+    const lastClone = slides[slides.length - 1].cloneNode(true);
+
+    // Append and prepend clones to the slider
+    slider.appendChild(firstClone);
+    slider.insertBefore(lastClone, slides[0]);
+
+    let currentSlide = 1; // Start at the real first slide
+    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    function changeSlide() {
+        currentSlide++;
+        slider.style.transition = 'transform 0.5s ease-in-out';
         slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-    
-        function changeSlide() {
-            currentSlide++;
-            slider.style.transition = 'transform 0.5s ease-in-out';
-            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-    
-            // Reset to the actual first slide after reaching the clone
-            if (currentSlide === slideCount + 1) {
-                setTimeout(() => {
-                    slider.style.transition = 'none'; // Disable transition
-                    currentSlide = 1;
-                    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-                }, 500); // Match transition duration
-            }
+
+        // Reset to the actual first slide after reaching the clone
+        if (currentSlide === slideCount + 1) {
+            setTimeout(() => {
+                slider.style.transition = 'none'; // Disable transition
+                currentSlide = 1;
+                slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }, 500); // Match transition duration
         }
-    
-        // Auto slide every 1.5 seconds
-        setInterval(changeSlide, 1500);
-    
-        // Swipe functionality for manual navigation
-        let startX;
-        slider.addEventListener('mousedown', (e) => {
-            startX = e.pageX;
-            slider.style.transition = 'none';
-        });
-    
-        slider.addEventListener('mouseup', (e) => {
-            const endX = e.pageX;
-            const distance = startX - endX;
-    
-            if (distance > 50) { // Swipe left
-                currentSlide++;
-            } else if (distance < -50) { // Swipe right
-                currentSlide--;
-            }
-    
-            slider.style.transition = 'transform 0.5s ease-in-out';
-            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-    
-            // Reset to correct slide if out of bounds
-            if (currentSlide === slideCount + 1) {
-                setTimeout(() => {
-                    slider.style.transition = 'none';
-                    currentSlide = 1;
-                    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-                }, 500);
-            } else if (currentSlide === 0) {
-                setTimeout(() => {
-                    slider.style.transition = 'none';
-                    currentSlide = slideCount;
-                    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-                }, 500);
-            }
-        });
-    </script>
-    
+    }
+
+    // Auto slide every 1.5 seconds
+    setInterval(changeSlide, 1500);
+
+    // Swipe functionality for manual navigation
+    let startX;
+    slider.addEventListener('mousedown', (e) => {
+        startX = e.pageX;
+        slider.style.transition = 'none';
+    });
+
+    slider.addEventListener('mouseup', (e) => {
+        const endX = e.pageX;
+        const distance = startX - endX;
+
+        if (distance > 50) { // Swipe left
+            currentSlide++;
+        } else if (distance < -50) { // Swipe right
+            currentSlide--;
+        }
+
+        slider.style.transition = 'transform 0.5s ease-in-out';
+        slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+        // Reset to correct slide if out of bounds
+        if (currentSlide === slideCount + 1) {
+            setTimeout(() => {
+                slider.style.transition = 'none';
+                currentSlide = 1;
+                slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }, 500);
+        } else if (currentSlide === 0) {
+            setTimeout(() => {
+                slider.style.transition = 'none';
+                currentSlide = slideCount;
+                slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }, 500);
+        }
+    });
+</script>
+
        
 
     <div class="container">
